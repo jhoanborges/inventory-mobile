@@ -1,0 +1,2 @@
+error for gradlew
+chmod +x /home/megatron/Documents/inventory-mobile/android/gradlew
