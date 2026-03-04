@@ -1,5 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Config from 'react-native-config';
 import type {
   AuthResponse,
   Lote,
@@ -11,7 +12,7 @@ import type {
 } from '../types';
 
 const api = axios.create({
-  baseURL: 'http://192.168.100.8:80/api', // Local network IP for physical device
+  baseURL: `${Config.API_URL}/api`,
   headers: {'Content-Type': 'application/json', Accept: 'application/json'},
 });
 

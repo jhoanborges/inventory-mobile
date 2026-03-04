@@ -1,2 +1,6 @@
 error for gradlew
 chmod +x /home/megatron/Documents/inventory-mobile/android/gradlew
+
+
+
+REACT_NATIVE_DEVTOOLS=0 yarn start                                  
