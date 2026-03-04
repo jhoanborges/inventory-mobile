@@ -34,9 +34,17 @@ export interface Ruta {
   nombre: string;
   origen: string;
   destino: string;
+  origen_direccion?: string;
+  origen_place_id?: string;
+  origen_lat?: number;
+  origen_lng?: number;
+  destino_direccion?: string;
+  destino_place_id?: string;
+  destino_lat?: number;
+  destino_lng?: number;
   operador_id?: number;
   vehiculo?: string;
-  estado: 'pendiente' | 'en_progreso' | 'completada';
+  estado: 'pendiente' | 'en_progreso' | 'pausada' | 'completada';
   fecha_inicio?: string;
   fecha_fin?: string;
   operador?: User;

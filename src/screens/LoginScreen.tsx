@@ -13,19 +13,24 @@ export default function LoginScreen() {
   const [secureText, setSecureText] = useState(true);
 
   const handleLogin = () => {
-    dispatch(loginThunk({ email, password }));
+    console.log('LOGIN ATTEMPT:', { email, password });
+    dispatch(loginThunk({ email, password }))
+      .unwrap()
+      .then(res => console.log('LOGIN SUCCESS:', JSON.stringify(res)))
+      .catch(err => console.log('LOGIN ERROR:', err));
   };
 
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-neutral-900"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
       <StatusBar barStyle="light-content" backgroundColor="#171717" />
 
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
         keyboardShouldPersistTaps="handled"
-        bounces={false}>
+        showsVerticalScrollIndicator={false}>
         <View className="flex-1 items-center justify-center pt-10">
           <View className="w-20 h-20 rounded-full bg-white/15 items-center justify-center mb-4">
             <Text className="text-3xl font-bold text-white">IB</Text>
@@ -38,7 +43,7 @@ export default function LoginScreen() {
           </Text>
         </View>
 
-        <View className="bg-white dark:bg-neutral-800 rounded-t-3xl px-6 pt-8 pb-10">
+        <View className="bg-white dark:bg-neutral-800 rounded-t-3xl px-6 pt-8 pb-20">
           <Text className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-6">
             Iniciar Sesion
           </Text>
@@ -72,7 +77,9 @@ export default function LoginScreen() {
           />
 
           {error && (
-            <Text className="text-sm text-danger mb-2">{error}</Text>
+            <View className="bg-red-100 rounded-lg p-3 mb-2">
+              <Text className="text-sm text-red-600">{error}</Text>
+            </View>
           )}
 
           <StyledButton

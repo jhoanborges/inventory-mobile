@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, ScrollView, Text} from 'react-native';
-import {Sun, Moon, Package, AlertTriangle, Truck, ArrowLeftRight} from 'lucide-react-native';
-import {useAppDispatch} from '../store/hooks';
-import {logoutThunk} from '../store/authSlice';
-import {getProductos, getRutas, getMovimientos} from '../services/api';
+import {View, ScrollView, Text, Alert} from 'react-native';
+import {Sun, Moon, Package, AlertTriangle, Truck, ArrowLeftRight, MapPin} from 'lucide-react-native';
+import {getProductos, getRutas, getMovimientos, registrarUbicacion} from '../services/api';
+import {getDeviceInfo, getCurrentLocation} from '../services/deviceInfo';
 import {useTheme} from '../context/ThemeContext';
 import {StyledCard, StyledButton} from '../components/ui';
 
 export default function HomeScreen() {
-  const dispatch = useAppDispatch();
   const {toggleTheme, isDark} = useTheme();
   const [stats, setStats] = useState({
     totalProductos: 0,
@@ -36,6 +34,28 @@ export default function HomeScreen() {
     };
     load();
   }, []);
+
+  const [sendingLocation, setSendingLocation] = useState(false);
+
+  const handleSendLocation = async () => {
+    setSendingLocation(true);
+    try {
+      const location = await getCurrentLocation();
+      if (!location) {
+        Alert.alert('Error', 'No se pudo obtener la ubicación');
+        return;
+      }
+      await registrarUbicacion({
+        ...location,
+        registrado_at: new Date().toISOString(),
+      });
+      Alert.alert('Enviado', `Ubicación enviada: ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`);
+    } catch (e: any) {
+      Alert.alert('Error', e.response?.data?.message || 'No se pudo enviar la ubicación');
+    } finally {
+      setSendingLocation(false);
+    }
+  };
 
   const iconColor = isDark ? '#f5f5f5' : '#171717';
 
@@ -103,13 +123,18 @@ export default function HomeScreen() {
         </StyledCard>
       </View>
 
-      <View className="mt-6">
-        <StyledButton
-          variant="outlined"
-          onPress={() => dispatch(logoutThunk())}>
-          Cerrar Sesion
-        </StyledButton>
-      </View>
+      <StyledButton
+        onPress={handleSendLocation}
+        disabled={sendingLocation}
+        className="mt-4 mb-8">
+        <View className="flex-row items-center justify-center">
+          <MapPin size={18} color="#fff" />
+          <Text className="text-white font-semibold ml-2">
+            {sendingLocation ? 'Enviando...' : 'Enviar Ubicación'}
+          </Text>
+        </View>
+      </StyledButton>
+
     </ScrollView>
   );
 }

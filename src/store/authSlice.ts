@@ -27,8 +27,12 @@ export const loginThunk = createAsyncThunk(
 );
 
 export const logoutThunk = createAsyncThunk('auth/logout', async () => {
-  await api.logout();
   await AsyncStorage.removeItem('token');
+  try {
+    await api.logout();
+  } catch {
+    // Ignore API errors — local session is already cleared
+  }
 });
 
 export const restoreToken = createAsyncThunk('auth/restore', async () => {

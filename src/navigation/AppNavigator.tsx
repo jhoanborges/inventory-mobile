@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, ScanBarcode, Route} from 'lucide-react-native';
+import {Home, ScanBarcode, Route, UserCircle} from 'lucide-react-native';
 import {useAppSelector} from '../store/hooks';
 import {useTheme} from '../context/ThemeContext';
 import LoginScreen from '../screens/LoginScreen';
@@ -11,6 +11,7 @@ import ProductDetailScreen from '../screens/ProductDetailScreen';
 import MovimientoScreen from '../screens/MovimientoScreen';
 import RutasScreen from '../screens/RutasScreen';
 import RutaDetailScreen from '../screens/RutaDetailScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,6 +41,14 @@ function RutasStack() {
     <Stack.Navigator>
       <Stack.Screen name="RutasMain" component={RutasScreen} options={{title: 'Rutas'}} />
       <Stack.Screen name="RutaDetail" component={RutaDetailScreen} options={{title: 'Detalle Ruta'}} />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ProfileMain" component={ProfileScreen} options={{title: 'Perfil'}} />
     </Stack.Navigator>
   );
 }
@@ -80,6 +89,14 @@ function MainTabs() {
           tabBarIcon: ({color, size}) => <Route size={size} color={color} />,
         }}
       />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{
+          tabBarLabel: 'Perfil',
+          tabBarIcon: ({color, size}) => <UserCircle size={size} color={color} />,
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -94,5 +111,21 @@ function AuthStack() {
 
 export default function AppNavigator() {
   const token = useAppSelector(s => s.auth.token);
+  const wasAuthenticated = useRef(false);
+
+  useEffect(() => {
+    try {
+      const loc = require('../services/locationService');
+      if (token) {
+        wasAuthenticated.current = true;
+        loc.startLocationTracking();
+      } else if (wasAuthenticated.current) {
+        loc.stopLocationTracking();
+      }
+    } catch (err) {
+      console.warn('[LocationService] Not available, rebuild needed:', err);
+    }
+  }, [token]);
+
   return token ? <MainTabs /> : <AuthStack />;
 }

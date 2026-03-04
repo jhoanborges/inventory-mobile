@@ -11,8 +11,11 @@ import type {
   User,
 } from '../types';
 
+const BASE_URL = Config.API_URL || 'https://inventory-backend-main-wklaj1.laravel.cloud';
+console.log('API BASE URL:', BASE_URL);
+
 const api = axios.create({
-  baseURL: `${Config.API_URL}/api`,
+  baseURL: `${BASE_URL}/api`,
   headers: {'Content-Type': 'application/json', Accept: 'application/json'},
 });
 
@@ -52,6 +55,40 @@ export const getRuta = (id: number) =>
 
 export const updateRuta = (id: number, data: Partial<Ruta>) =>
   api.put<{data: Ruta}>(`/rutas/${id}`, data);
+
+type RutaActionPayload = {
+  lat?: number;
+  lng?: number;
+  motivo_pausa?: string;
+  dispositivo?: Record<string, unknown>;
+};
+
+export const iniciarRuta = (id: number, payload?: RutaActionPayload) =>
+  api.post<{message: string; ruta: Ruta}>(`/rutas/${id}/iniciar`, payload);
+
+export const pausarRuta = (id: number, payload?: RutaActionPayload) =>
+  api.post<{message: string; ruta: Ruta}>(`/rutas/${id}/pausar`, payload);
+
+export const finalizarRuta = (id: number, payload?: RutaActionPayload) =>
+  api.post<{message: string; ruta: Ruta}>(`/rutas/${id}/finalizar`, payload);
+
+// Ubicaciones (location tracking)
+export const registrarUbicacion = (data: {
+  lat: number;
+  lng: number;
+  altitud?: number | null;
+  precision?: number | null;
+  velocidad?: number | null;
+  rumbo?: number | null;
+  registrado_at?: string;
+}) => api.post('/ubicacion', data);
+
+export const getUbicaciones = (params?: {
+  user_id?: number;
+  desde?: string;
+  hasta?: string;
+  per_page?: number;
+}) => api.get('/ubicaciones', {params});
 
 // Movimientos
 export const getMovimientos = (params?: Record<string, string | number>) =>
