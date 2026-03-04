@@ -81,6 +81,7 @@ export const registrarUbicacion = (data: {
   velocidad?: number | null;
   rumbo?: number | null;
   registrado_at?: string;
+  dispositivo?: Record<string, unknown>;
 }) => api.post('/ubicacion', data);
 
 export const getUbicaciones = (params?: {

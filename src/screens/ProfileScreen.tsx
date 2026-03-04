@@ -9,7 +9,7 @@ import {
   Linking,
   Alert,
 } from 'react-native';
-import {MapPin, Bell, LogOut, ChevronRight, Shield} from 'lucide-react-native';
+import {MapPin, Bell, Camera, LogOut, ChevronRight, Shield} from 'lucide-react-native';
 import {useAppDispatch, useAppSelector} from '../store/hooks';
 import {logoutThunk} from '../store/authSlice';
 import {useTheme} from '../context/ThemeContext';
@@ -23,6 +23,7 @@ export default function ProfileScreen() {
   const {isDark} = useTheme();
   const [locationStatus, setLocationStatus] = useState<LocationPermissionLevel>('checking');
   const [notifStatus, setNotifStatus] = useState<'granted' | 'denied' | 'checking'>('checking');
+  const [cameraStatus, setCameraStatus] = useState<'granted' | 'denied' | 'checking'>('checking');
 
   const iconColor = isDark ? '#f5f5f5' : '#171717';
   const mutedColor = isDark ? '#a3a3a3' : '#737373';
@@ -50,9 +51,16 @@ export default function ProfileScreen() {
       } else {
         setNotifStatus('granted'); // Not needed pre-Android 13
       }
+
+      // Camera permission
+      const camGranted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+      setCameraStatus(camGranted ? 'granted' : 'denied');
     } else {
       setLocationStatus('never_asked');
       setNotifStatus('granted');
+      setCameraStatus('checking'); // iOS handled by VisionCamera
     }
   }, []);
 
@@ -146,6 +154,36 @@ export default function ProfileScreen() {
       } else {
         setNotifStatus('denied');
       }
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      const result = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Permiso de cámara',
+          message: 'La app necesita acceso a la cámara para escanear códigos de barras.',
+          buttonPositive: 'Permitir',
+          buttonNegative: 'Denegar',
+        },
+      );
+      if (result === PermissionsAndroid.RESULTS.GRANTED) {
+        setCameraStatus('granted');
+      } else if (result === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+        Alert.alert(
+          'Permiso requerido',
+          'Para habilitar la cámara, ve a Ajustes > Permisos > Cámara y activa el permiso.',
+          [
+            {text: 'Cancelar', style: 'cancel'},
+            {text: 'Abrir Ajustes', onPress: () => Linking.openSettings()},
+          ],
+        );
+      } else {
+        setCameraStatus('denied');
+      }
+    } else {
+      Linking.openSettings();
     }
   };
 
@@ -280,6 +318,38 @@ export default function ProfileScreen() {
             </View>
           </>
         )}
+        {/* Camera permission row */}
+        <Divider />
+        <View className="flex-row items-center justify-between py-3">
+          <View className="flex-row items-center flex-1">
+            <Camera size={20} color={mutedColor} />
+            <View className="ml-3 flex-1">
+              <Text className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                Cámara
+              </Text>
+              <Text
+                style={{color: cameraStatus === 'granted' ? '#16a34a' : cameraStatus === 'denied' ? '#dc2626' : mutedColor}}
+                className="text-xs mt-0.5">
+                {cameraStatus === 'granted'
+                  ? 'Permitido'
+                  : cameraStatus === 'denied'
+                    ? 'Denegado'
+                    : 'Verificando...'}
+              </Text>
+            </View>
+          </View>
+          {cameraStatus === 'denied' && (
+            <TouchableOpacity
+              onPress={requestCameraPermission}
+              activeOpacity={0.7}
+              className="flex-row items-center border border-neutral-300 dark:border-neutral-600 rounded-xl px-3 py-2">
+              <Text className="text-xs text-neutral-700 dark:text-neutral-300 mr-1">
+                Solicitar
+              </Text>
+              <ChevronRight size={14} color={mutedColor} />
+            </TouchableOpacity>
+          )}
+        </View>
       </StyledCard>
 
       {/* Logout */}

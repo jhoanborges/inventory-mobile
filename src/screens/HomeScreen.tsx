@@ -40,17 +40,25 @@ export default function HomeScreen() {
   const handleSendLocation = async () => {
     setSendingLocation(true);
     try {
+      console.log('[HomeScreen] Getting location...');
       const location = await getCurrentLocation();
+      console.log('[HomeScreen] Location result:', JSON.stringify(location));
       if (!location) {
         Alert.alert('Error', 'No se pudo obtener la ubicación');
         return;
       }
+      console.log('[HomeScreen] Getting device info...');
+      const device = await getDeviceInfo();
+      console.log('[HomeScreen] Device info:', JSON.stringify(device));
+      console.log('[HomeScreen] Sending to API...');
       await registrarUbicacion({
         ...location,
         registrado_at: new Date().toISOString(),
+        dispositivo: device,
       });
       Alert.alert('Enviado', `Ubicación enviada: ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`);
     } catch (e: any) {
+      console.warn('[HomeScreen] Error:', e);
       Alert.alert('Error', e.response?.data?.message || 'No se pudo enviar la ubicación');
     } finally {
       setSendingLocation(false);

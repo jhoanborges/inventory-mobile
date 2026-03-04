@@ -1,6 +1,7 @@
 import {Platform, PermissionsAndroid} from 'react-native';
 import {RNLocation} from '@hyoper/rn-location';
 import {registrarUbicacion} from './api';
+import {getDeviceInfo} from './deviceInfo';
 
 const INTERVAL_MS = 60 * 1000; // 1 minute
 
@@ -14,9 +15,11 @@ async function sendPing() {
     return;
   }
   try {
+    const dispositivo = await getDeviceInfo();
     await registrarUbicacion({
       ...lastLocation,
       registrado_at: new Date().toISOString(),
+      dispositivo,
     });
     console.log('[LocationService] Ping sent:', lastLocation.lat, lastLocation.lng);
   } catch (err) {

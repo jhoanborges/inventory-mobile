@@ -7677,6 +7677,7 @@ __metadata:
     react-native-safe-area-context: "npm:^5.7.0"
     react-native-screens: "npm:^4.24.0"
     react-native-svg: "npm:^15.15.3"
+    react-native-vision-camera: "npm:^4.7.3"
     react-native-worklets: "npm:^0.7.4"
     react-redux: "npm:^9.2.0"
     react-test-renderer: "npm:19.2.3"
@@ -8675,6 +8676,26 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/6aa5ea4745c7d174909468b5d5cb75059856d907f0b039bf3650deb81c9afcbd356f2382d7a7424d4cc69597aea5a508484ee5dba91b9126e3b520bc10faefe9
+  languageName: node
+  linkType: hard
+
+"react-native-vision-camera@npm:^4.7.3":
+  version: 4.7.3
+  resolution: "react-native-vision-camera@npm:4.7.3"
+  peerDependencies:
+    "@shopify/react-native-skia": "*"
+    react: "*"
+    react-native: "*"
+    react-native-reanimated: "*"
+    react-native-worklets-core: "*"
+  peerDependenciesMeta:
+    "@shopify/react-native-skia":
+      optional: true
+    react-native-reanimated:
+      optional: true
+    react-native-worklets-core:
+      optional: true
+  checksum: 10c0/46001037f4f9a85e75c023e5082b137c179fd520741e088009d217f0a6eaf3a819b9784ae68aced95fa70c3345346c79dd2ee70bc04cfd811c7eefeda675cab2
   languageName: node
   linkType: hard
 

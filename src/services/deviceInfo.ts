@@ -10,19 +10,27 @@ type DeviceData = {
 export async function getDeviceInfo(): Promise<DeviceData> {
   try {
     const DeviceInfo = require('react-native-device-info').default;
+    console.log('[DeviceInfo] Module loaded:', !!DeviceInfo);
+    console.log('[DeviceInfo] getModel:', typeof DeviceInfo?.getModel);
     const [battery, model, osVersion, appVersion] = await Promise.all([
-      DeviceInfo.getBatteryLevel().catch(() => null),
+      DeviceInfo.getBatteryLevel().catch((e: any) => {
+        console.warn('[DeviceInfo] getBatteryLevel failed:', e);
+        return null;
+      }),
       Promise.resolve(DeviceInfo.getModel()),
       Promise.resolve(DeviceInfo.getSystemVersion()),
       Promise.resolve(DeviceInfo.getVersion()),
     ]);
-    return {
+    const result = {
       bateria: battery !== null ? Math.round(battery * 1000) / 10 : null,
       modelo: model,
       os: `${Platform.OS === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
       version_app: appVersion,
     };
-  } catch {
+    console.log('[DeviceInfo] Result:', JSON.stringify(result));
+    return result;
+  } catch (e) {
+    console.warn('[DeviceInfo] Failed to load:', e);
     return {
       bateria: null,
       modelo: 'unknown',
@@ -46,24 +54,39 @@ export async function getCurrentLocation(): Promise<{lat: number; lng: number} |
 
     const {RNLocation} = require('@hyoper/rn-location');
     return new Promise(resolve => {
+      let resolved = false;
       const sub = RNLocation.subscribe();
       const timeout = setTimeout(() => {
-        sub.unsubscribe();
-        resolve(null);
+        if (!resolved) {
+          resolved = true;
+          sub.unsubscribe();
+          console.warn('[getCurrentLocation] Timed out after 15s');
+          resolve(null);
+        }
       }, 15000);
 
       sub.onChange((locations: any[]) => {
-        if (locations.length > 0) {
+        if (!resolved && locations.length > 0) {
+          resolved = true;
           clearTimeout(timeout);
           sub.unsubscribe();
           resolve({lat: locations[0].latitude, lng: locations[0].longitude});
         }
       });
 
-      sub.onError(() => {
-        clearTimeout(timeout);
-        sub.unsubscribe();
-        resolve(null);
+      sub.onError((error: any) => {
+        // Ignore transient provider errors — the subscription keeps retrying
+        if (error?.code === 'ERROR_UNKNOWN' && /temporarily unavailable/i.test(error?.message)) {
+          return;
+        }
+        // Fatal error — bail out
+        if (!resolved) {
+          resolved = true;
+          clearTimeout(timeout);
+          sub.unsubscribe();
+          console.warn('[getCurrentLocation] Fatal error:', error?.code, error?.message);
+          resolve(null);
+        }
       });
     });
   } catch {
