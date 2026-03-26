@@ -16,3 +16,27 @@ retail
 
 laminas del norte
 entradas y salidas 
+
+
+
+ For a debug APK:                                                      
+                                                                        
+  cd android && ./gradlew assembleDebug                                 
+                                                                        
+  Output: android/app/build/outputs/apk/debug/app-debug.apk             
+                                                                        
+  For a release APK:
+
+  cd android && ./gradlew assembleRelease
+                                                                        
+  Output: android/app/build/outputs/apk/|release/app-release.apk
+                                                                        
+  For a release AAB (Google Play bundle):                               
+  
+  cd android && ./gradlew bundleRelease                                 
+                  
+  Output: android/app/build/outputs/bundle/release/app-release.aab
+
+  Note: Release builds require signing configuration in                 
+  android/app/build.gradle. If you haven't set up a keystore yet, the
+  debug APK is the quickest way to test on a physical device.    

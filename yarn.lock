@@ -7671,6 +7671,7 @@ __metadata:
     react-native-config: "npm:^1.6.1"
     react-native-device-info: "npm:^15.0.2"
     react-native-gesture-handler: "npm:^2.30.0"
+    react-native-keyevent: "npm:^0.3.2"
     react-native-maps: "npm:^1.27.1"
     react-native-maps-directions: "npm:^1.9.0"
     react-native-reanimated: "npm:^4.2.2"
@@ -8596,6 +8597,15 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/87d20b900aded7d44c90afb946a7aa03c23a94ca3dd547bdddc2303b85357e4aab22567a57b19f1558d6c8be7058e3dcf34faa1e15182d1604f90974266d9a1d
+  languageName: node
+  linkType: hard
+
+"react-native-keyevent@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "react-native-keyevent@npm:0.3.2"
+  peerDependencies:
+    react-native: ">=0.30"
+  checksum: 10c0/3daf9c56c0ce67a6a8e256307065b78899470fdf4632bac5894bc1556ae9fdd96c1881813b025ed250d33c624518861102f2daf0bef927d3e731118d105418e0
   languageName: node
   linkType: hard
 

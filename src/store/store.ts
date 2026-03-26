@@ -5,11 +5,12 @@ import authReducer from './authSlice';
 import productosReducer from './productosSlice';
 import movimientosReducer from './movimientosSlice';
 import rutasReducer from './rutasSlice';
+import bulkScanReducer from './bulkScanSlice';
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'bulkScan'],
 };
 
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   productos: productosReducer,
   movimientos: movimientosReducer,
   rutas: rutasReducer,
+  bulkScan: bulkScanReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

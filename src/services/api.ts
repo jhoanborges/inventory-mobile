@@ -31,7 +31,7 @@ api.interceptors.request.use(async config => {
 api.interceptors.response.use(
   response => response,
   async error => {
-    if (error.response?.status === 401 && error.config?.url !== '/auth/login') {
+    if (error.response?.status === 401 && error.config?.url !== '/auth/login' && error.config?.url !== '/auth/logout') {
       console.log('[API] 401 Unauthenticated — clearing session');
       try {
         await api.post('/auth/logout');
@@ -120,5 +120,43 @@ export const createMovimiento = (data: Partial<MovimientoInventario>) =>
 // Scan
 export const scanBarcode = (barcode: string) =>
   api.get<{data: Producto}>(`/scan/${barcode}`);
+
+export type VerifyStockItem = {
+  barcode: string;
+  quantity: number;
+  available: boolean;
+  stock_actual: number;
+  producto: string | null;
+};
+
+export const verifyStock = (items: {barcode: string; quantity: number}[]) =>
+  api.post<{items: VerifyStockItem[]}>('/scan/verify-stock', {items});
+
+// Operaciones
+export type OperacionPayload = {
+  ruta_id: number | null;
+  tipo: 'salida' | 'entrada';
+  items: {barcode: string; quantity: number}[];
+};
+
+export type OperacionMovimiento = {
+  id: number;
+  producto_id: number;
+  barcode: string;
+  cantidad: number;
+  tipo: string;
+  ruta_id: number | null;
+};
+
+export type OperacionResponse = {
+  message: string;
+  movimientos: OperacionMovimiento[];
+};
+
+export const createOperacion = (data: OperacionPayload) =>
+  api.post<OperacionResponse>('/operaciones', data);
+
+export const getOperacion = (id: number) =>
+  api.get<OperacionResponse>(`/operaciones/${id}`);
 
 export default api;
