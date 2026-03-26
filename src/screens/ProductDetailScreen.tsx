@@ -1,9 +1,21 @@
-import React from 'react';
-import {View, ScrollView, Text} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  Dimensions,
+  FlatList,
+  type NativeSyntheticEvent,
+  type NativeScrollEvent,
+} from 'react-native';
 import {StyledCard, Badge, Divider, StyledButton} from '../components/ui';
 import type {Producto} from '../types';
 import type {StackNavigationProp} from '@react-navigation/stack';
 import type {RouteProp} from '@react-navigation/native';
+
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const IMAGE_WIDTH = SCREEN_WIDTH - 32; // p-4 padding on each side
 
 type Props = {
   route: RouteProp<{params: {producto: Producto}}, 'params'>;
@@ -13,9 +25,51 @@ type Props = {
 export default function ProductDetailScreen({route, navigation}: Props) {
   const {producto} = route.params;
   const isLowStock = producto.stock_actual <= producto.stock_minimo;
+  const images = producto.imagenes?.length ? producto.imagenes : [];
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const index = Math.round(e.nativeEvent.contentOffset.x / IMAGE_WIDTH);
+    setActiveIndex(index);
+  };
 
   return (
     <ScrollView className="flex-1 bg-neutral-100 dark:bg-black p-4">
+      {images.length > 0 && (
+        <View className="mb-4 rounded-2xl overflow-hidden bg-white dark:bg-neutral-900">
+          <FlatList
+            data={images}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            keyExtractor={(_, i) => String(i)}
+            renderItem={({item}) => (
+              <Image
+                source={{uri: item}}
+                style={{width: IMAGE_WIDTH, height: IMAGE_WIDTH * 0.75}}
+                resizeMode="cover"
+              />
+            )}
+          />
+          {images.length > 1 && (
+            <View className="flex-row justify-center py-2 gap-1.5">
+              {images.map((_, i) => (
+                <View
+                  key={i}
+                  className={`h-2 rounded-full ${
+                    i === activeIndex
+                      ? 'w-6 bg-neutral-900 dark:bg-neutral-100'
+                      : 'w-2 bg-neutral-300 dark:bg-neutral-600'
+                  }`}
+                />
+              ))}
+            </View>
+          )}
+        </View>
+      )}
+
       <StyledCard className="mb-4">
         <Text className="text-xl font-bold text-neutral-900 dark:text-neutral-100">
           {producto.nombre}

@@ -4,3 +4,15 @@ chmod +x /home/megatron/Documents/inventory-mobile/android/gradlew
 
 
 REACT_NATIVE_DEVTOOLS=0 yarn start                                  
+
+Al salir escanean cajas. 
+Al llegar vuelven a escanear.
+
+como lo hacen manuel se les olvida, pierden las hojas. 
+
+solo lo usan para capturar compras, venta, facturacion, y punto de venta que trae
+
+retail
+
+laminas del norte
+entradas y salidas 

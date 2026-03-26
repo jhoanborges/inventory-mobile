@@ -9,7 +9,9 @@ export interface Producto {
   stock_actual: number;
   stock_minimo: number;
   barcode?: string;
+  barcode_image?: string;
   imagen?: string;
+  imagenes?: string[];
   activo: boolean;
   created_at: string;
   updated_at: string;

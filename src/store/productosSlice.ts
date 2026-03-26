@@ -7,6 +7,7 @@ interface ProductosState {
   total: number;
   loading: boolean;
   error: string | null;
+  lastScannedBarcode: string | null;
 }
 
 const initialState: ProductosState = {
@@ -14,6 +15,7 @@ const initialState: ProductosState = {
   total: 0,
   loading: false,
   error: null,
+  lastScannedBarcode: null,
 };
 
 export const fetchProductos = createAsyncThunk(
@@ -27,7 +29,11 @@ export const fetchProductos = createAsyncThunk(
 const productosSlice = createSlice({
   name: 'productos',
   initialState,
-  reducers: {},
+  reducers: {
+    setLastScannedBarcode(state, action) {
+      state.lastScannedBarcode = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchProductos.pending, state => {
@@ -46,4 +52,5 @@ const productosSlice = createSlice({
   },
 });
 
+export const {setLastScannedBarcode} = productosSlice.actions;
 export default productosSlice.reducer;

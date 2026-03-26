@@ -136,8 +136,8 @@ export default function HomeScreen() {
         disabled={sendingLocation}
         className="mt-4 mb-8">
         <View className="flex-row items-center justify-center">
-          <MapPin size={18} color="#fff" />
-          <Text className="text-white font-semibold ml-2">
+          <MapPin size={18} color={isDark ? '#171717' : '#ffffff'} />
+          <Text className="text-white dark:text-neutral-900 font-semibold ml-2">
             {sendingLocation ? 'Enviando...' : 'Enviar Ubicación'}
           </Text>
         </View>

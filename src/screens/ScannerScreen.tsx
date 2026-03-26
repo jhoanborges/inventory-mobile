@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Platform,
   PermissionsAndroid,
+  TextInput,
+  InteractionManager,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -22,8 +24,12 @@ import {
   useCodeScanner,
   Camera as VisionCamera,
 } from 'react-native-vision-camera';
+import {useFocusEffect} from '@react-navigation/native';
 import {scanBarcode} from '../services/api';
 import {StyledTextInput, StyledButton} from '../components/ui';
+import {useTheme} from '../context/ThemeContext';
+import {useAppDispatch, useAppSelector} from '../store/hooks';
+import {setLastScannedBarcode} from '../store/productosSlice';
 import type {StackNavigationProp} from '@react-navigation/stack';
 
 type Props = {
@@ -36,19 +42,47 @@ export default function ScannerScreen({navigation}: Props) {
   const [cameraOpen, setCameraOpen] = useState(false);
   const [scanned, setScanned] = useState(false);
 
+  const {isDark} = useTheme();
   const {hasPermission, requestPermission} = useCameraPermission();
   const device = useCameraDevice('back');
+  const inputRef = useRef<TextInput>(null);
+  const dispatch = useAppDispatch();
+  const lastScannedBarcode = useAppSelector(s => s.productos.lastScannedBarcode);
+
+  // Focus input after navigation settles so hardware scanner wedge input lands here
+  useFocusEffect(
+    useCallback(() => {
+      if (!cameraOpen) {
+        const task = InteractionManager.runAfterInteractions(() => {
+          inputRef.current?.focus();
+        });
+        return () => task.cancel();
+      }
+    }, [cameraOpen]),
+  );
 
   const handleScan = async (code?: string) => {
+    if (loading) {
+      return;
+    }
     const value = (code ?? barcode).trim();
+    console.log('[Scanner] Barcode scanned:', value);
     if (!value) {
       return;
     }
+    if (value === lastScannedBarcode) {
+      console.log('[Scanner] Duplicate scan, same as last barcode:', value);
+    } else {
+      console.log('[Scanner] New barcode detected:', value);
+    }
+    dispatch(setLastScannedBarcode(value));
     setLoading(true);
     try {
-      const {data} = await scanBarcode(value);
-      navigation.navigate('ProductDetail', {producto: data.data});
-    } catch {
+      const res = await scanBarcode(value);
+      console.log('[Scanner] API response:', JSON.stringify(res.data));
+      navigation.navigate('ProductDetail', {producto: res.data.data});
+    } catch (err: any) {
+      console.log('[Scanner] API error:', err?.response?.status, err?.response?.data, err?.message);
       Alert.alert('No encontrado', 'Producto no encontrado con ese codigo');
     }
     setLoading(false);
@@ -194,29 +228,39 @@ export default function ScannerScreen({navigation}: Props) {
         Escanear Producto
       </Text>
 
-      <View className="flex-row items-end gap-2">
-        <View className="flex-1">
-          <StyledTextInput
-            label="Codigo de barras"
-            value={barcode}
-            onChangeText={setBarcode}
-            placeholder="Ingresa el codigo"
-            leftIcon={<Search size={20} color="#a3a3a3" />}
-            onSubmitEditing={() => handleScan()}
-          />
-        </View>
-        <TouchableOpacity
-          onPress={openCamera}
-          className="bg-blue-600 rounded-xl p-3.5 mb-0.5"
-          activeOpacity={0.7}>
-          <Camera size={24} color="#fff" />
-        </TouchableOpacity>
-      </View>
+      <Text className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+        Codigo de barras
+      </Text>
+      <StyledTextInput
+        ref={inputRef}
+        value={barcode}
+        onChangeText={text => {
+          console.log('[Scanner] Input changed:', text);
+          setBarcode(text);
+        }}
+        placeholder="Escanéa el codigo"
+        leftIcon={<Search size={20} color="#a3a3a3" />}
+        rightIcon={
+          <TouchableOpacity
+            onPress={() => {
+              setBarcode('');
+              inputRef.current?.focus();
+            }}
+            disabled={!barcode.trim()}
+            hitSlop={{top: 12, bottom: 12, left: 12, right: 12}}
+            style={{padding: 6}}
+            activeOpacity={0.7}>
+            <X size={18} color={barcode.trim() ? (isDark ? '#e5e5e5' : '#525252') : '#d4d4d4'} />
+          </TouchableOpacity>
+        }
+        onSubmitEditing={e => handleScan(e.nativeEvent.text)}
+        showSoftInputOnFocus={false}
+      />
 
       <StyledButton
         onPress={() => handleScan()}
         loading={loading}
-        disabled={loading}
+        disabled={loading || !barcode.trim()}
         className="mt-2">
         Buscar
       </StyledButton>

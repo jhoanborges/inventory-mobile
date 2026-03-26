@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, ScanBarcode, Route, UserCircle} from 'lucide-react-native';
+import {Home, ScanBarcode, Route, PackageSearch, UserCircle} from 'lucide-react-native';
 import {useAppSelector} from '../store/hooks';
 import {useTheme} from '../context/ThemeContext';
 import LoginScreen from '../screens/LoginScreen';
@@ -11,6 +11,7 @@ import ProductDetailScreen from '../screens/ProductDetailScreen';
 import MovimientoScreen from '../screens/MovimientoScreen';
 import RutasScreen from '../screens/RutasScreen';
 import RutaDetailScreen from '../screens/RutaDetailScreen';
+import BulkScanScreen from '../screens/BulkScanScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator();
@@ -41,6 +42,14 @@ function RutasStack() {
     <Stack.Navigator>
       <Stack.Screen name="RutasMain" component={RutasScreen} options={{title: 'Rutas'}} />
       <Stack.Screen name="RutaDetail" component={RutaDetailScreen} options={{title: 'Detalle Ruta'}} />
+    </Stack.Navigator>
+  );
+}
+
+function BulkScanStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="BulkScanMain" component={BulkScanScreen} options={{title: 'Inventario'}} />
     </Stack.Navigator>
   );
 }
@@ -87,6 +96,14 @@ function MainTabs() {
         options={{
           tabBarLabel: 'Rutas',
           tabBarIcon: ({color, size}) => <Route size={size} color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="BulkScan"
+        component={BulkScanStack}
+        options={{
+          tabBarLabel: 'Inventario',
+          tabBarIcon: ({color, size}) => <PackageSearch size={size} color={color} />,
         }}
       />
       <Tab.Screen

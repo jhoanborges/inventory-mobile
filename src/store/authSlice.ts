@@ -67,11 +67,18 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
       })
+      .addCase(restoreToken.pending, state => {
+        state.loading = true;
+      })
       .addCase(restoreToken.fulfilled, (state, action) => {
+        state.loading = false;
         if (action.payload) {
           state.token = action.payload.token;
           state.user = action.payload.user;
         }
+      })
+      .addCase(restoreToken.rejected, state => {
+        state.loading = false;
       });
   },
 });

@@ -1,9 +1,10 @@
 import React, {useEffect} from 'react';
-import {StatusBar} from 'react-native';
+import {StatusBar, View, ActivityIndicator} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {Provider as StoreProvider} from 'react-redux';
-import {store} from './src/store/store';
+import {PersistGate} from 'redux-persist/integration/react';
+import {store, persistor} from './src/store/store';
 import {restoreToken} from './src/store/authSlice';
 import {ThemeProvider, useTheme} from './src/context/ThemeContext';
 import AppNavigator from './src/navigation/AppNavigator';
@@ -52,14 +53,24 @@ function AppContent() {
   );
 }
 
+function LoadingScreen() {
+  return (
+    <View style={{flex: 1, backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center'}}>
+      <ActivityIndicator size="large" color="#171717" />
+    </View>
+  );
+}
+
 export default function App() {
   return (
     <StoreProvider store={store}>
-      <SafeAreaProvider>
-        <ThemeProvider>
-          <AppContent />
-        </ThemeProvider>
-      </SafeAreaProvider>
+      <PersistGate loading={<LoadingScreen />} persistor={persistor}>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <AppContent />
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </PersistGate>
     </StoreProvider>
   );
 }

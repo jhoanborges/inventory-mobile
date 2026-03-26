@@ -21,11 +21,30 @@ const api = axios.create({
 
 api.interceptors.request.use(async config => {
   const token = await AsyncStorage.getItem('token');
+  console.log('[API] Request:', config.method?.toUpperCase(), config.url, 'Token:', token ? token.substring(0, 10) + '...' : 'null');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+api.interceptors.response.use(
+  response => response,
+  async error => {
+    if (error.response?.status === 401 && error.config?.url !== '/auth/login') {
+      console.log('[API] 401 Unauthenticated — clearing session');
+      try {
+        await api.post('/auth/logout');
+      } catch {
+        // ignore — token already invalid
+      }
+      await AsyncStorage.removeItem('token');
+      const {store} = require('../store/store');
+      store.dispatch({type: 'auth/logout/fulfilled'});
+    }
+    return Promise.reject(error);
+  },
+);
 
 // Auth
 export const login = (email: string, password: string) =>

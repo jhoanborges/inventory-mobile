@@ -3,7 +3,7 @@ import {RNLocation} from '@hyoper/rn-location';
 import {registrarUbicacion} from './api';
 import {getDeviceInfo} from './deviceInfo';
 
-const INTERVAL_MS = 60 * 1000; // 1 minute
+const INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
 
 let intervalId: ReturnType<typeof setInterval> | null = null;
 let lastLocation: {lat: number; lng: number; altitud: number | null; precision: number | null; velocidad: number | null; rumbo: number | null} | null = null;
