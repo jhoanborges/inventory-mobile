@@ -36,7 +36,7 @@ export default function LoginScreen() {
             <Text className="text-3xl font-bold text-white">IB</Text>
           </View>
           <Text className="text-3xl font-bold text-white text-center">
-            Inventario Bodega
+            InventoryX
           </Text>
           <Text className="text-sm text-white/60 mt-1">
             Gestiona tu inventario

@@ -1,4 +1,4 @@
-# Inventario Bodega - Mobile
+# InventoryX - Mobile
 
 Aplicación móvil para operadores de bodega. Permite escanear productos, registrar movimientos de inventario y gestionar rutas de distribución.
 
