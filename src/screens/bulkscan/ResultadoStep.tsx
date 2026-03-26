@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  Image,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {
   CircleCheckBig,
   CircleX,
@@ -15,17 +17,21 @@ import {
   Route,
   ChevronDown,
   ChevronUp,
+  PenLine,
+  Check,
 } from 'lucide-react-native';
 import {useTheme} from '../../context/ThemeContext';
 import {useAppSelector, useAppDispatch} from '../../store/hooks';
-import {clearScannedItems} from '../../store/bulkScanSlice';
+import {clearScannedItems, setFirma} from '../../store/bulkScanSlice';
 import {createOperacion, type OperacionMovimiento} from '../../services/api';
 
 export default function ResultadoStep() {
   const {isDark} = useTheme();
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<any>();
   const items = useAppSelector(s => s.bulkScan.items);
   const selectedRutaId = useAppSelector(s => s.bulkScan.selectedRutaId);
+  const firma = useAppSelector(s => s.bulkScan.firma);
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -35,8 +41,12 @@ export default function ResultadoStep() {
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
 
+  const operationLabel = selectedRutaId
+    ? `Ruta #${selectedRutaId}`
+    : `${items.length} producto${items.length !== 1 ? 's' : ''}`;
+
   const handleSubmit = async () => {
-    if (items.length === 0) {
+    if (items.length === 0 || !firma) {
       return;
     }
     setLoading(true);
@@ -48,6 +58,7 @@ export default function ResultadoStep() {
         ruta_id: selectedRutaId,
         tipo: 'salida' as const,
         items: items.map(i => ({barcode: i.barcode, quantity: i.quantity ?? 1})),
+        firma,
       };
       console.log('[Resultado] Sending:', JSON.stringify(payload));
       const res = await createOperacion(payload);
@@ -179,6 +190,57 @@ export default function ResultadoStep() {
           ))}
         </View>
 
+        {/* Signature button */}
+        <View className="rounded-xl bg-white dark:bg-neutral-900 p-4 mb-4">
+          <View className="flex-row items-center mb-3">
+            <PenLine size={16} color={isDark ? '#a3a3a3' : '#737373'} />
+            <Text className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 ml-2">
+              Firma del operador
+            </Text>
+            <Text className="text-xs text-red-500 ml-1">*</Text>
+          </View>
+
+          {firma ? (
+            <>
+              <View className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-950 mb-3" style={{height: 120}}>
+                <Image
+                  source={{uri: firma}}
+                  style={{width: '100%', height: '100%'}}
+                  resizeMode="contain"
+                />
+              </View>
+              <View className="flex-row gap-3">
+                <TouchableOpacity
+                  onPress={() => dispatch(setFirma(null))}
+                  className="flex-1 rounded-lg py-2 items-center border border-neutral-300 dark:border-neutral-700"
+                  activeOpacity={0.7}>
+                  <Text className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                    Eliminar
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Firma', {label: operationLabel})}
+                  className="flex-1 rounded-lg py-2 items-center border border-neutral-300 dark:border-neutral-700"
+                  activeOpacity={0.7}>
+                  <Text className="text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                    Cambiar firma
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Firma', {label: operationLabel})}
+              className="flex-row items-center justify-center gap-2 rounded-xl py-4 border-2 border-dashed border-neutral-300 dark:border-neutral-600"
+              activeOpacity={0.7}>
+              <PenLine size={20} color={isDark ? '#a3a3a3' : '#737373'} />
+              <Text className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                Toque para firmar
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
         {/* Error box */}
         {error && (
           <View className="rounded-xl bg-red-50 dark:bg-red-950/30 p-4 mb-4">
@@ -230,14 +292,23 @@ export default function ResultadoStep() {
         )}
         <TouchableOpacity
           onPress={handleSubmit}
-          disabled={loading}
-          className="bg-neutral-900 dark:bg-neutral-100 rounded-xl py-3 items-center"
+          disabled={loading || !firma}
+          className={`rounded-xl py-3 items-center ${
+            !firma
+              ? 'bg-neutral-300 dark:bg-neutral-700'
+              : 'bg-neutral-900 dark:bg-neutral-100'
+          }`}
           activeOpacity={0.7}>
           {loading ? (
             <ActivityIndicator size="small" color={isDark ? '#171717' : '#f5f5f5'} />
           ) : (
-            <Text className="text-sm font-semibold text-white dark:text-neutral-900">
-              Confirmar operacion
+            <Text
+              className={`text-sm font-semibold ${
+                !firma
+                  ? 'text-neutral-500 dark:text-neutral-400'
+                  : 'text-white dark:text-neutral-900'
+              }`}>
+              {firma ? 'Confirmar operacion' : 'Firma requerida'}
             </Text>
           )}
         </TouchableOpacity>

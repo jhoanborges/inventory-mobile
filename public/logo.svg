@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="553.19061"
+   height="600"
+   viewBox="0 0 553.19062 600"
+   sodipodi:docname="6425463.ai"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:export-filename="../../home/megatron/Documents/logo.ai.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath20">
+      <path
+         d="M 0,500 H 500 V 0 H 0 Z"
+         id="path18" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.5405"
+     inkscape:cx="379.09771"
+     inkscape:cy="333.33334"
+     inkscape:window-width="2560"
+     inkscape:window-height="1362"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g16" />
+  <g
+     id="g10"
+     inkscape:groupmode="layer"
+     inkscape:label="Page 1"
+     transform="matrix(1.3333333,0,0,-1.3333333,-56.73801,633.33332)">
+    <g
+       id="g14">
+      <g
+         id="g16"
+         clip-path="url(#clipPath20)">
+        <g
+           id="g22"
+           transform="translate(354.2192,277.0415)" />
+        <g
+           id="g1743"
+           transform="matrix(2.7082673,0,0,2.7082673,-433.48405,-493.9636)">
+          <g
+             id="g26"
+             transform="translate(252.3796,191.622)">
+            <path
+               d="M 0,0 -76.587,45.608 V 76.587 L 0,30.979 Z"
+               style="fill:#302c4d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path28" />
+          </g>
+          <g
+             id="g30"
+             transform="translate(328.967,237.2302)">
+            <path
+               d="m 0,0 -76.587,-45.608 v 30.979 L 0,30.979 Z"
+               style="fill:#e66239;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path32" />
+          </g>
+          <g
+             id="g34"
+             transform="translate(252.359,357.7799)">
+            <path
+               d="M 0,0 -76.587,-45.608 V -76.587 L 0,-30.979 Z"
+               style="fill:#657e92;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path36" />
+          </g>
+          <g
+             id="g38"
+             transform="translate(328.9464,312.1717)">
+            <path
+               d="M 0,0 -76.587,45.608 V 14.629 L 0,-30.979 Z"
+               style="fill:#a3b2be;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path40" />
+          </g>
+          <g
+             id="g42"
+             transform="translate(252.3796,235.5092)">
+            <path
+               d="M 0,0 -76.587,45.608 V 76.587 L 0,30.979 Z"
+               style="fill:#302c4d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path44" />
+          </g>
+          <g
+             id="g46"
+             transform="translate(328.967,281.1174)">
+            <path
+               d="m 0,0 -76.587,-45.608 v 30.979 L 0,30.979 Z"
+               style="fill:#e66239;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path48" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

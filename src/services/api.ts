@@ -137,6 +137,7 @@ export type OperacionPayload = {
   ruta_id: number | null;
   tipo: 'salida' | 'entrada';
   items: {barcode: string; quantity: number}[];
+  firma: string;
 };
 
 export type OperacionMovimiento = {

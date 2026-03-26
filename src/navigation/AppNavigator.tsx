@@ -12,6 +12,7 @@ import MovimientoScreen from '../screens/MovimientoScreen';
 import RutasScreen from '../screens/RutasScreen';
 import RutaDetailScreen from '../screens/RutaDetailScreen';
 import BulkScanScreen from '../screens/BulkScanScreen';
+import FirmaScreen from '../screens/bulkscan/FirmaScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Stack = createStackNavigator();
@@ -50,6 +51,13 @@ function BulkScanStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="BulkScanMain" component={BulkScanScreen} options={{title: 'Inventario'}} />
+      <Stack.Screen
+        name="Firma"
+        component={FirmaScreen}
+        options={({route}: any) => ({
+          title: `Firma para ${route.params?.label ?? 'operacion'}`,
+        })}
+      />
     </Stack.Navigator>
   );
 }

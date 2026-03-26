@@ -4,6 +4,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {Provider as StoreProvider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
+import BootSplash from 'react-native-bootsplash';
 import {store, persistor} from './src/store/store';
 import {restoreToken} from './src/store/authSlice';
 import {ThemeProvider, useTheme} from './src/context/ThemeContext';
@@ -46,7 +47,9 @@ function AppContent() {
         barStyle={isDark ? 'light-content' : 'dark-content'}
         backgroundColor={isDark ? '#000000' : '#ffffff'}
       />
-      <NavigationContainer theme={isDark ? DarkNavTheme : LightNavTheme}>
+      <NavigationContainer
+        theme={isDark ? DarkNavTheme : LightNavTheme}
+        onReady={() => BootSplash.hide({fade: true})}>
         <AppNavigator />
       </NavigationContainer>
     </>

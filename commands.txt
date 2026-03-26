@@ -40,3 +40,18 @@ entradas y salidas
   Note: Release builds require signing configuration in                 
   android/app/build.gradle. If you haven't set up a keystore yet, the
   debug APK is the quickest way to test on a physical device.    
+
+
+
+
+  adb install /home/megatron/Documents/inventory-mobile/android/app/build/outputs/apk/release/app-release.apk
+                                                                         
+  If reinstalling over an existing version:                              
+                                                                         
+  adb install -r /home/megatron/Documents/inventory-mobile/android/app/bu
+  ild/outputs/apk/release/app-release.apk
+
+
+npx react-native-bootsplash generate public/logo.svg                 
+  --platforms=android --background="#F3F5F6" --logo-width=120          
+  --assets-output=assets/bootsplash    

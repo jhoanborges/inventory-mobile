@@ -14,11 +14,13 @@ export type ScannedItem = {
 interface BulkScanState {
   items: ScannedItem[];
   selectedRutaId: number | null;
+  firma: string | null;
 }
 
 const initialState: BulkScanState = {
   items: [],
   selectedRutaId: null,
+  firma: null,
 };
 
 const bulkScanSlice = createSlice({
@@ -68,12 +70,16 @@ const bulkScanSlice = createSlice({
     selectRuta(state, action: PayloadAction<number | null>) {
       state.selectedRutaId = action.payload;
     },
+    setFirma(state, action: PayloadAction<string | null>) {
+      state.firma = action.payload;
+    },
     clearScannedItems(state) {
       state.items = [];
       state.selectedRutaId = null;
+      state.firma = null;
     },
   },
 });
 
-export const {addScannedItem, incrementQuantity, setQuantity, updateScannedItem, failScannedItem, removeScannedItem, selectRuta, clearScannedItems} = bulkScanSlice.actions;
+export const {addScannedItem, incrementQuantity, setQuantity, updateScannedItem, failScannedItem, removeScannedItem, selectRuta, setFirma, clearScannedItems} = bulkScanSlice.actions;
 export default bulkScanSlice.reducer;
