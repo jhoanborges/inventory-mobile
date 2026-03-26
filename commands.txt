@@ -29,7 +29,7 @@ entradas y salidas
 
   cd android && ./gradlew assembleRelease
                                                                         
-  Output: android/app/build/outputs/apk/|release/app-release.apk
+  Output: android/app/build/outputs/apk/release/app-release.apk
                                                                         
   For a release AAB (Google Play bundle):                               
   
